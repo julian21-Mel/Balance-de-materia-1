@@ -57,13 +57,16 @@ initial_brix_input = st.number_input('Brix Inicial de la Pulpa (%) ($X_1$):', mi
 final_brix_input = st.number_input('Brix Final Deseado (%) ($X_3$):', min_value=0.0, max_value=100.0, value=10.0, step=0.1)
 
 if st.button('Calcular'):
+    # Añadimos más validación de los valores de entrada
     if final_brix_input <= initial_brix_input:
         st.error("El Brix final deseado debe ser mayor que el Brix inicial para que la adición de azúcar tenga sentido.")
+    elif final_brix_input >= 100:
+        st.error("El Brix final no puede ser 100% o más. Por favor, introduzca un valor válido.")
     else:
         # Perform the calculation
         final_mass, sugar_to_add = calculate_mass_balance(initial_pulp_mass_input, initial_brix_input, final_brix_input)
         
-        if final_mass is not None and sugar_to_add is not None:
+        if final_mass is not None and sugar_to_add is not None and sugar_to_add >= 0:
             # Display the results
             st.subheader('Resultados')
             st.success(f"Para ajustar la pulpa a **{final_brix_input}% Brix**, se debe agregar:")
@@ -71,7 +74,7 @@ if st.button('Calcular'):
             st.markdown(f"La masa final de la pulpa será de **{final_mass:.2f} kg**.")
             st.info("Este cálculo se basa en un balance de masa asumiendo que el azúcar añadido es 100% sólidos solubles.")
         else:
-            st.error("Ocurrió un error en el cálculo. Por favor, revise los valores ingresados.")
+            st.error("Ocurrió un error en el cálculo o los valores de entrada no son válidos. Por favor, revise los datos.")
 
 st.markdown("""
 <br>
@@ -80,16 +83,5 @@ st.markdown("""
 **Nota:** El código en este script asume la imagen se encuentra en la misma carpeta del repositorio. 
 Reemplace `username/repository` con su usuario y nombre de repositorio de GitHub.
 """, unsafe_allow_html=True)
-```
-***
-### ⚙️ Instrucciones para el despliegue
 
-1.  **Guarda el código**: Guarda el código anterior en un archivo con el nombre `app.py`. Este será el archivo principal de tu aplicación Streamlit.
 
-2.  **Crea un repositorio en GitHub**:
-    * Ve a **GitHub** y crea un nuevo repositorio público.
-    * Sube el archivo `app.py` y, si deseas que se muestre en la aplicación, la imagen del problema (`image_10f59a.jpg`) a este repositorio.
-    * Es recomendable incluir un archivo `requirements.txt` que especifique las dependencias del proyecto. Para este caso, el contenido sería simplemente:
-        ```
-        streamlit
-        
